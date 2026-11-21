@@ -15,13 +15,17 @@ dotenv.config();
 
 app.use(express.json());
 
+
+const allowedOrigins = [
+    "http://localhost:3000",
+    "https://chat-application-topaz-psi.vercel.app"
+];
+
 app.use(cors({
-    origin: [
-        "http://localhost:3000",
-        process.env.FRONTEND_URL
-    ].filter(Boolean),
-    methods: ["GET", "POST", "PUT", "DELETE"]
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }));
+
 
 // Wait for MongoDB before handling API requests
 app.use(async (req, res, next) => {
@@ -45,10 +49,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
     path: "/socket.io",
     cors: {
-        origin: [
-            "http://localhost:3000",
-            process.env.FRONTEND_URL
-        ].filter(Boolean),
+        origin: allowedOrigins,
         methods: ["GET", "POST"]
     }
 });
